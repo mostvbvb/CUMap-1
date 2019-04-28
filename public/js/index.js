@@ -7,15 +7,17 @@ var pos;
 var numb;
 var map;
 var mark;
-var stopCounter=true;
-    window.lat =13.7367;
-    window.lng =100.5331;
+var stopCounter = true;
+window.lat = 13.7367;
+window.lng = 100.5331;
 var arr_Destination = [
     { title: 'Place A', lat: 13.736363, lng: 100.533980 },
     { title: 'Place B', lat: 13.736086, lng: 100.533973 },
 ];
 var destinations = [];
 var posPlace;
+
+var bname = ""
 
 //Filters
 var librMarkers = [];
@@ -50,8 +52,9 @@ var directionsDisplay1;
 var directionsDisplay2;
 var directionsDisplay3;
 
-setInterval(function(){updatePosition(getLocation());}, 1000);
-var initMap=function() {
+
+setInterval(function () { updatePosition(getLocation()); }, 1000);
+var initMap = function () {
     //Map options
     console.log("FILE 1 map executed")
     var options = {
@@ -59,10 +62,10 @@ var initMap=function() {
         center: { lat: 13.7384, lng: 100.5321 }
     }
     //Create Map
-     map = new google.maps.Map(document.getElementById('map'), options);
-     mark = new google.maps.Marker({position:{lat:lat, lng:lng}, map:map});
-     mark.setVisible(false);
-    setInterval(function(){realtimeSetup();},1000);
+    map = new google.maps.Map(document.getElementById('map'), options);
+    mark = new google.maps.Marker({ position: { lat: lat, lng: lng }, map: map });
+    mark.setVisible(false);
+    setInterval(function () { realtimeSetup(); }, 1000);
     var directionsService = new google.maps.DirectionsService;
     // Instantiate Directions Renderers
     directionsDisplay1 = new google.maps.DirectionsRenderer;
@@ -86,167 +89,197 @@ var initMap=function() {
     GGM = new Object(google.maps);
     service = new GGM.DistanceMatrixService();
     directionsDisplay.setMap(map);
-    
-    
+
+    // New added unchecked all landmarks
+    document.getElementById("atm").checked = false;
+    document.getElementById("canteen").checked = false;
+    document.getElementById("libr").checked = false;
+    document.getElementById("coffeeshop").checked = false;
+    document.getElementById("museum").checked = false;
+    document.getElementById("copyprint").checked = false;
+    document.getElementById("vendm").checked = false;
 
     document.getElementById("atm").addEventListener("click", function () {
         atmCounter++;
-        $.get('/location/atm', (data) => {
-            console.log("ATM ", data[0].Latitude);
-            if (atmCounter % 2 != 0) {
-                for (i = 0; i <= atmMarkers.length; i++) {
-                    atmMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/atm.png'
-                    });
-                }
+        if (atmCounter % 2 != 0) {
+            if (atmCounter == 1) {
+                $.get('/location/atm', (data) => {
+                    for (i = 0; i < data.length; i++) {
+                        atmMarkers[i] = addMarker(data, '/img/atm.png', data[i].Bank_name);
+                    }
+                });
             } else {
-                for (i = 0; i <= atmMarkers.length; i++) {
-                    atmMarkers[i].setVisible(false);
+                for (i = 0; i < atmMarkers.length; i++) {
+                    atmMarkers[i].setVisible(true);
                 }
             }
-        });
+        } else {
+            for (i = 0; i < atmMarkers.length; i++) {
+                atmMarkers[i].setVisible(false);
+            }
+        }
+
     });
 
     document.getElementById("canteen").addEventListener("click", function () {
         canteenCounter++;
-        $.get('/location/canteen', (data) => {
-            if (canteenCounter % 2 != 0) {
-                for (i = 0; i <= canteenMarkers.length; i++) {
-                    canteenMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/canteen.png'
-                    });
-                }
+        if (canteenCounter % 2 != 0) {
+            if (canteenCounter == 1) {
+                $.get('/location/canteen', (data) => {
+                    for (i = 0; i < data.length; i++) {
+                        canteenMarkers[i] = addMarker(data, '/img/canteen.png', data[i].Canteen_name);
+                    }
+                });
             } else {
-                for (i = 0; i <= canteenMarkers.length; i++) {
-                    canteenMarkers[i].setVisible(false);
+                for (i = 0; i < canteenMarkers.length; i++) {
+                    canteenMarkers[i].setVisible(true);
                 }
             }
-        });
+        } else {
+            for (i = 0; i < canteenMarkers.length; i++) {
+                canteenMarkers[i].setVisible(false);
+            }
+        }
     });
 
     document.getElementById("museum").addEventListener("click", function () {
         museumCounter++;
-        $.get('/location/museum', (data) => {
-            if (museumCounter % 2 != 0) {
-                for (i = 0; i <= museumMarkers.length; i++) {
-                    museumMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/museum.png'
-                    });
-                }
+        if (museumCounter % 2 != 0) {
+            if (museumCounter == 1) {
+                $.get('/location/museum', (data) => {
+                    for (i = 0; i < data.length; i++) {
+                        museumMarkers[i] = addMarker(data, '/img/museum.png', data[i].Museum_name);
+                    }
+                });
             } else {
-                for (i = 0; i <= museumMarkers.length; i++) {
-                    museumMarkers[i].setVisible(false);
+                for (i = 0; i < museumMarkers.length; i++) {
+                    museumMarkers[i].setVisible(true);
                 }
             }
-        });
+        } else {
+            for (i = 0; i < museumMarkers.length; i++) {
+                museumMarkers[i].setVisible(false);
+            }
+        }
     });
 
     document.getElementById("coffeeshop").addEventListener("click", function () {
         coffeeshopCounter++;
-        $.get('/location/coffeeshop', (data) => {
-            if (coffeeshopCounter % 2 != 0) {
-                for (i = 0; i <= coffeeshopMarkers.length; i++) {
-                    coffeeshopMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/coffee.png'
-                    });
-                }
+        if (coffeeshopCounter % 2 != 0) {
+            if (coffeeshopCounter == 1) {
+                $.get('/location/coffeeshop', (data) => {
+                    for (i = 0; i < data.length; i++) {
+                        coffeeshopMarkers[i] = addMarker(data, '/img/coffee.png', data[i].Coffee_shop_name);
+                    }
+                });
             } else {
-                for (i = 0; i <= coffeeshopMarkers.length; i++) {
-                    coffeeshopMarkers[i].setVisible(false);
+                for (i = 0; i < coffeeshopMarkers.length; i++) {
+                    coffeeshopMarkers[i].setVisible(true);
                 }
             }
-        });
+        } else {
+            for (i = 0; i < coffeeshopMarkers.length; i++) {
+                coffeeshopMarkers[i].setVisible(false);
+            }
+        }
     });
 
     document.getElementById("copyprint").addEventListener("click", function () {
         copyCounter++;
-        $.get('/location/copyprint', (data) => {
-            if (copyCounter % 2 != 0) {
-                for (i = 0; i <= copyMarkers.length; i++) {
-                    copyMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/copy.png'
-                    });
-                }
+        if (copyCounter % 2 != 0) {
+            if (copyCounter == 1) {
+                $.get('/location/copyprint', (data) => {
+                    for (i = 0; i < data.length; i++) {
+                        copyMarkers[i] = addMarker(data, '/img/copy.png', data[i].Copy_Print_shop_name);
+                    }
+                });
             } else {
-                for (i = 0; i <= copyMarkers.length; i++) {
-                    copyMarkers[i].setVisible(false);
+                for (i = 0; i < copyMarkers.length; i++) {
+                    copyMarkers[i].setVisible(true);
                 }
             }
-        });
+        } else {
+            for (i = 0; i < copyMarkers.length; i++) {
+                copyMarkers[i].setVisible(false);
+            }
+        }
     });
 
     document.getElementById("vendm").addEventListener("click", function () {
         vendmCounter++;
-        $.get('/location/vending_machine', (data) => {
-            if (vendmCounter % 2 != 0) {
-                for (i = 0; i <= vendmMarkers.length; i++) {
-                    vendmMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/vending.png'
-                    });
-                }
+        if (vendmCounter % 2 != 0) {
+            if (vendmCounter == 1) {
+                $.get('/location/vending_machine', (data) => {
+                    for (i = 0; i < data.length; i++) {
+                        vendmMarkers[i] = addMarker(data, '/img/vending.png', data[i].Vending_Machine_type);
+                    }
+                });
             } else {
-                for (i = 0; i <= vendmMarkers.length; i++) {
-                    vendmMarkers[i].setVisible(false);
+                for (i = 0; i < vendmMarkers.length; i++) {
+                    vendmMarkers[i].setVisible(true);
                 }
             }
-        });
+        } else {
+            for (i = 0; i < vendmMarkers.length; i++) {
+                vendmMarkers[i].setVisible(false);
+            }
+        }
     });
 
     document.getElementById("libr").addEventListener("click", function () {
         librCounter++;
-        $.get('/location/library', (data) => {
-            if (librCounter % 2 != 0) {
-                for (i = 0; i <= librMarkers.length; i++) {
-                    librMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/Libr.png'
-                    });
-                }
+        if (librCounter % 2 != 0) {
+            if (librCounter == 1) {
+                $.get('/location/library', (data) => {
+                    for (i = 0; i < data.length; i++) {
+                        librMarkers[i] = addMarker(data, '/img/Libr.png', data[i].Library_name);
+                    }
+                });
             } else {
-                for (i = 0; i <= librMarkers.length; i++) {
-                    librMarkers[i].setVisible(false);
+                for (i = 0; i < librMarkers.length; i++) {
+                    librMarkers[i].setVisible(true);
                 }
             }
-        });
+        } else {
+            for (i = 0; i < librMarkers.length; i++) {
+                librMarkers[i].setVisible(false);
+            }
+        }
     });
 
     document.getElementById('getRoute').onclick = function () {
         getCurrentLocation();
         setTimeout(() => calculateAndDisplayRoute(directionsService, directionsDisplay1, directionsDisplay2, directionsDisplay3, searchBox), 2000);
     };
+    //For adding marker to map
+    function addMarker(data, icon, content) {
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
+            map: map,
+            icon: icon
+        });
+        var infoWindow = new google.maps.InfoWindow({
+            content: content
+        });
+
+        marker.addListener('click', function () {
+            infoWindow.open(map, marker);
+        });
+
+        return marker;
+    }
+    //to be deleted
+        document.getElementById('getRoute').onclick = function () {
+            getCurrentLocation();
+            setTimeout(() => calculateAndDisplayRoute(directionsService, directionsDisplay, searchBox), 1000);
+        };
     // Listen for click on map
     google.maps.event.addListener(map, 'click', function (event) {
     });
 
     var markers = [];
-    /*
-    // Array of markers
-    var markers = [
-        {
-            coords: { lat: 13.7367, lng: 100.5331 },
-            iconImage: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
-            content: '<h1>Faculty of Engineering</h1>'
-        },
-        {
-            coords: { lat: 13.7393, lng: 100.5341 },
-            content: '<h1>Faculty of Art</h1>'
-        }
-    ];*/
 
-    //search box ja
+    //search box
     var searchBox = new google.maps.places.SearchBox(document.getElementById("building-search-box"));
     map.addListener('bounds_changed', function () {
         searchBox.setBounds(map.getBounds());
@@ -256,6 +289,9 @@ var initMap=function() {
     // more details for that place.
     searchBox.addListener('places_changed', searchPlace);
     function searchPlace() {
+        var ms = document.getElementById("method-select");
+        ms.style.display = "block";
+        
         var places = searchBox.getPlaces();
         if (places.length == 0) {
             return;
@@ -294,33 +330,40 @@ var initMap=function() {
             if (place.geometry.location == "(13.7365812, 100.53260790000002)" || place.geometry.location == "(13.7365812, 100.53257869999993)") {
                 openFloorPlan();
                 mapFunc(0, 1);
+                bname = "Engineering Building 1"
             }
 
             //engineering building 2
             else if (place.geometry.location == "(13.7364773, 100.53339249999999)") {
                 openFloorPlan();
                 mapFunc(0, 2);
+                bname = "Engineering Building 2"
             }
             //engineering building 3
             else if (place.geometry.location == "(13.7368903, 100.53315620000001)") {
                 openFloorPlan();
                 mapFunc(0, 3);
+                bname = "Engineering Building 3"
             }
 
             //engineering building 100
             else if (place.geometry.location == "(13.736365, 100.53394780000008)" || place.geometry.location == "(13.7364442, 100.53388510000002)") {
                 openFloorPlan();
                 mapFunc(0, 100);
+                bname = "Engineering Building 100"
             }
 
             //Maha Chakri Sirindhorn Building
             else if (place.geometry.location == "(13.7392952, 100.5340708)" || place.geometry.location == "(13.7392241, 100.53434160000006)") {
                 openFloorPlan();
                 mapFunc(1, 1);
+                bname = "Maha Chakri Sirindhorn Building"
             }
             else {
                 closeFloorPlan();
+                bname = place.geometry.location;
             }
+            document.getElementById("telldest").innerHTML = "Destination : "+bname;
 
             if (place.geometry.viewport) {
                 // Only geocodes have viewport.
@@ -337,6 +380,10 @@ var initMap=function() {
             alert("Please enter destination.");
         } else {
             searchPlace();
+
+            // hide landmark
+            var ld = document.getElementById("landmark-dropdown");
+            ld.style.display = "none";
         }
     });
     document.getElementById("building-search-box").onkeydown = function () {
@@ -345,6 +392,10 @@ var initMap=function() {
                 alert("Please enter destination.");
             } else {
                 searchPlace();
+
+                // hide landmark
+                var ld = document.getElementById("landmark-dropdown");
+                ld.style.display = "none";
             }
         }
 
@@ -352,14 +403,19 @@ var initMap=function() {
     calculateDistance();
 
 };
-window.initMap=initMap;
+window.initMap = initMap;
 
+var flList
+var selectedFloor
+var flstr
 
+var coursedays = 0
+var nameid = ""
+var currentcourse = ""
+var currentsec = 0
+var indexcount = 0
 
-
-
-var listCourse = ["2190101 Computer Programming", "2183101 Engineering Graphics"];
-var theCourse = ""
+var havemap = 0
 
 function courseOnEnter(ele) {
     if (event.key === 'Enter') {
@@ -369,14 +425,26 @@ function courseOnEnter(ele) {
 
 function searchCourse() {
 
-    for (i = 0; i < listCourse.length; i++) {
-        if (document.getElementById("course-search").value == (listCourse[i])) {
-            theCourse = listCourse[i];
+    for (i = 0; i < courseidnamesec.length; i++) {
+        if (document.getElementById("course-search").value == (courseidnamesec[i])) {
+            theCourse = courseidnamesec[i];
+            currentcourse = allcourseinfo[i].course_id
+            currentsec = allcourseinfo[i].section
+            arrayindex = i
             break;
         }
     }
+    nameid = allcourseinfo[i].course_id + " " + allcourseinfo[i].course_name
+    indexcount = allcoursecount.findIndex(ii => ii.crsec === currentcourse + " " + currentsec)
+    coursedays = allcoursecount[indexcount].countcrssec
+
     if (theCourse != "") {
-        showCourse();
+        showCourse(theCourse);
+
+        // hide landmark
+        var ld = document.getElementById("landmark-dropdown");
+        ld.style.display = "none";
+
     } else if (document.getElementById("course-search").value.length == 0) {
         alert("Please enter course.")
     } else {
@@ -385,21 +453,64 @@ function searchCourse() {
     }
 }
 
-function showCourse() {
+function showCourse(theCourse) {
+    closeCourseInfo()
+    closeFloorPlan()
     var courseDiv = document.getElementById("course-info");
+    var htmltext = "";
     courseDiv.style.display = "block";
     document.getElementById("course-info-head").style.display = "block";
-    document.getElementById("course-info-head").scrollIntoView({ behavior: "smooth" });
-    courseDiv.innerHTML = "<p>Course : " + theCourse + "<br> Section :<br> Lecturer :<br> Day : <br> Time : <br> Room number : <br> Building : <br> Floor : <br> Faculty : </p>";
     theCourse = ""; //prepare to use for next course search
+    if (allcourseinfo[arrayindex].faculty_name === "Faculty of Engineering") {
+        if (allcourseinfo[arrayindex].bld_name === "Engineering Building 1") {
+            havemap = 1
+            mapFunc(0, 1);
+        } else if (allcourseinfo[arrayindex].bld_name === "Engineering Building 2") {
+            havemap = 1
+            mapFunc(0, 2);
+        } else if (allcourseinfo[arrayindex].bld_name === "Engineering Building 3") {
+            havemap = 1
+            mapFunc(0, 3);
+        } else if (allcourseinfo[arrayindex].bld_name === "Engineering Centennial Memorial Building") {
+            havemap = 1
+            mapFunc(0, 100);
+        } else {
+            havemap = 0;
+        }
+    } else if (allcourseinfo[arrayindex].faculty_name === "Faculty of Arts") {
+        if (allcourseinfo[arrayindex].bld_name === "Maha Chakri Sirindhorn Building") {
+            havemap = 1
+            mapFunc(1, 1);
+        } else {
+            havemap = 0;
+        }
+    } else {
+        havemap = 0;
+    }
+
+    flstr = allcourseinfo[arrayindex].floor;
+    document.getElementById("selfloorlist").value = "Floor " + flstr
+    flFunc();
+
+    for (var times = 0; times < coursedays; times++) {
+        htmltext = htmltext + "<p>Course : " + nameid + "<br> Lecturer : " + allcourseinfo[arrayindex + times].Prof_Name + "<br> Section : " + currentsec + "<br> Day : " + allcourseinfo[arrayindex + times].Day + "<br> Time : " + allcourseinfo[arrayindex + times].ctime + "<br> Faculty : " + allcourseinfo[arrayindex + times].faculty_name + "<br> Room : " + allcourseinfo[arrayindex + times].room_number + "<br> Floor : " + allcourseinfo[arrayindex + times].floor + "<br> Building : " + allcourseinfo[arrayindex + times].bld_name + "</p>" + "<button class=\"btn-go\" id=\"courseroute" + times + "\" onclick=\"goToClass()\">Get Route</button><br><br>"
+        bname =  allcourseinfo[arrayindex + times].bld_name;
+        document.getElementById("telldest").innerHTML = "Destination : "+bname;
+    }
+    courseDiv.innerHTML = htmltext
 }
 
-
-
+function goToClass() {
+    if (havemap === 1) {
+        openFloorPlan()
+    }
+    var ms = document.getElementById("method-select");
+    ms.style.display = "block";
+    
+}
 
 function openFloorPlan() {
     document.getElementById("flPlan").style.display = "block";
-    document.getElementById("flPlan").scrollIntoView(true, { behavior: "smooth" });
 }
 
 function closeCourseInfo() {
@@ -412,14 +523,11 @@ function closeFloorPlan() {
 }
 
 function selBuild() {
-    // document.getElementById("fl-4").classList.toggle("hide");
     document.getElementById("myDropdown").classList.toggle("show");
-    //document.getElementById("fl-4").classList.toggle("hide");
 }
 
 function mapFunc(fac, building) {
 
-    //*
     var flList = document.getElementById("selfloorlist");
 
     //create floor list options
@@ -448,9 +556,6 @@ function mapFunc(fac, building) {
     currentBuild = building;
     currentFac = fac;
 
-    //old ver floor drop down
-    //document.getElementById("theDrop2").innerText = "Floor 1";
-
     if (fac == 0) { //if it is a building in faculty of engineering
         if (building == 100) {//default floor is M
             flList.add(flarr[20]);
@@ -460,8 +565,9 @@ function mapFunc(fac, building) {
             flList.add(flarr[9]);
             flList.add(flarr[10]);
             flList.add(flarr[12]);
-            document.getElementById("show-map").innerHTML = "<center><img src=\"img/ENG0100-FR90.png\"></center>"
-            document.getElementById("theDrop2").innerText = "Floor M";
+            //default floor is M
+            document.getElementById("show-map").innerHTML = "<center><img src=\"img/ENG0100-FR90.jpg\"></center>"
+            flList.value = "Floor M";
         }
         else {
             flList.add(flarr[1]);
@@ -474,10 +580,9 @@ function mapFunc(fac, building) {
 
             //default floor is 1
             document.getElementById("show-map").innerHTML = "<center><img src=\"img/ENG0" + building + "-FR1.png\"></center>"
-            //document.getElementById("theDrop").innerText = "Engineering Building " + building;
-            document.getElementById("building-num").innerText = "Engineering Building " + building;
         }
 
+        document.getElementById("building-num").innerText = "Engineering Building " + building;
 
     }
     else if (fac == 1) { //if it is a building in faculty of arts
@@ -489,7 +594,6 @@ function mapFunc(fac, building) {
         flList.value = "Floor 1";
 
         document.getElementById("show-map").innerHTML = "<center><img src=\"img/ARTS01-FR1.png\"></center>"
-        //document.getElementById("theDrop").innerText = "Maha Chakri Sirindhorn Building";
         document.getElementById("building-num").innerText = "Maha Chakri Sirindhorn Building";
     }
 }
@@ -544,10 +648,16 @@ function getCurrentLocation() {
 //Draw route from current location to destination
 
 
+
+
+function getFloorFromDropDown() {
+    flList = document.getElementById("selfloorlist");
+    selectedFloor = flList.value + ""
+    flstr = selectedFloor.slice(6)
+    flFunc()
+}
+
 function flFunc() {
-    var flList = document.getElementById("selfloorlist");
-    var selectedFloor = flList.value + ""
-    var flstr = selectedFloor.slice(6)
     if (flstr == "M") {
         flstr = 90;
     }
@@ -1070,6 +1180,7 @@ function calculateDistance(mode = 1, transportMode = 'DRIVING', fromLat = 0, fro
         }, function () {
             // คำสั่งทำงาน ถ้า ระบบระบุตำแหน่ง geolocation ผิดพลาด หรือไม่ทำงาน    
         });
+
     } else {
 
     }

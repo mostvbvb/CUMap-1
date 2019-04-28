@@ -28,36 +28,106 @@
 <body>
 
 
-    <div class="home-header">
-        <img src="img/CUMaplogo.png" width="100px" height="100px">
-        <center>
-            <input class="search-box" id="building-search-box" type="text" placeholder=" SEARCH BUILDING">
-            <button class="btn-go" id="gobuilding">GO</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input class="search-box" id="course-search" type="text" placeholder=" SEARCH COURSE"
-                onkeydown="courseOnEnter(this)">
-            <script>
-                var listCourse = ["2190101 Computer Programming", "2183101 Engineering Graphics"];
-                $("#course-search").autocomplete({
-                    source: listCourse
-                });
+                <!-- Landmark dropdown -->
+                <div class="landmark-dropdown" id="landmark-dropdown">
+                    <input class="dropdown-selector" type="checkbox" />
+                    <div class="dropdown-caption">Landmark</div>
+                    <div class="dropdown-content">
+                        <!-- checkbox -->
+                        <br>
+                        <div class="landmark-wrapper">
+                            <div class="col" style="background:transparent">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="atm" name="atm" unchecked/>
+                                    <label for="atm"></label>
+                                </div>
+                                <span class="landmark-check">ATM</span>
+                            </div>
 
-            </script>
+                            <div class="col" style="background:transparent">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="canteen" name="canteen" unchecked/>
+                                    <label for="canteen"></label>
+                                </div>
+                                <span class="landmark-check">CANTEEN</span>
+                            </div>
+                            <div class="col" style="background:transparent">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="libr" name="libr" unchecked/>
+                                    <label for="libr"></label>
+                                </div>
+                                <span class="landmark-check">LIBRARY</span>
+                            </div>
 
-            <button class="btn-go" onclick="searchCourse()" id="gocourse">GO</button>
-            <br>
-            <br>
-            <button class="btn-go" id="gps" onclick = "gpsHere()">&nbsp;Mark Your Current Location</button>
-            <button class="btn-go" id="cleargps" onclick="initMap()">&nbsp;Clear Current Location</button>
-            <button class="btn-go" id="getRoute" onclick="routeTo()">&nbsp;Get Route</button>
-            <br>
-            <!--<button class="btn1" onclick="openFloorPlan()" id="floorPlanbtn">FLOOR PLAN</button>-->
-        </center>
-    </div>
+                            <div class="col" style="background:transparent">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="coffeeshop" name="coffeeshop" unchecked/>
+                                    <label for="coffeeshop"></label>
+                                </div>
+                                <span class="landmark-check">COFFEE SHOP</span>
+                            </div>
 
-    </div>
+                            <div class="col" style="background:transparent">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="museum" name="museum" unchecked/>
+                                    <label for="museum"></label>
+                                </div>
+                                <span class="landmark-check">MUSEUM</span>
+                            </div>
 
-    <div class="container">
-        <div class="tab">
+                            <div class="col" style="background: transparent">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="copyprint" name="copyprint" unchecked/>
+                                    <label for="copyprint"></label>
+                                </div>
+                                <span class="landmark-check">COPY &amp; PRINT SHOP</span>
+                            </div>
+
+                            <div class="col" style="background:transparent">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="vendm" name="vendm" unchecked/>
+                                    <label for="vendm"></label>
+                                </div>
+                                <span class="landmark-check">VENDING MACHINE</span>
+                            </div>
+
+                            <div class="col" style="background:transparent">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="popbus" name="popbus" unchecked/>
+                                    <label for="popbus"></label>
+                                </div>
+                                <span class="landmark-check">CU POPBUS</span>
+                            </div>
+
+                            <div class="col" style="background:transparent">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="cubike" name="cubike" unchecked/>
+                                    <label for="cubike"></label>
+                                </div>
+                                <span class="landmark-check">CU BIKE</span>
+                            </div>
+
+                            <div class="col" style="background:transparent">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="hamo" name="hamo" unchecked/>
+                                    <label for="hamo"></label>
+                                </div>
+                                <span class="landmark-check">CU TOYOTA HA:MO</span>
+                            </div>
+
+                            <div class="col" style="background:transparent">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="muvmi" name="muvmi" unchecked/>
+                                    <label for="muvmi"></label>
+                                </div>
+                                <span class="landmark-check">Muvmi</span>
+                            </div>
+                        </div>
+                        <br>
+                        <!-- End checkbox -->
+                    </div>
+                    <!-- End Landmark dropdown -->
+                </div>
 
         </div>
 

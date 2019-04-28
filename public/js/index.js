@@ -42,7 +42,7 @@ var currentLng = null;
 //var walkingAllowed = true; // Unnecessary
 var bicycleAllowed = false;
 var hamoAllowed = false;
-var popBusAllowed = false;
+var popBusAllowed = true;
 var muvmiAllowed = false;
 
 // Create Directions Renderers (only 3 are are needed at most as of now)
@@ -614,7 +614,9 @@ function calculateBestTravelMode(start, end, popBusNode, bicycleNode, hamoNode, 
                                                 startIndex = muvmiStartIndex;
                                                 endIndex = muvmiEndIndex;
                                             }
-
+                                              // Debug -- force popBus as bestMode
+                                                startIndex = popBusStartIndex;
+                                                endIndex = popBusEndIndex;
                                             callback(bestMode, startIndex, endIndex);
                                         }
                                     );
@@ -893,7 +895,7 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay1, directi
             directionsDisplay3.set('directions', null);
 
             // Debug -- Force Pop Bus as Best Mode to test functionality
-            //bestMode = 'popBus';
+            bestMode = 'popBus';
 
             switch(bestMode) {
                 case 'walking':

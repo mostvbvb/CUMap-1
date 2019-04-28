@@ -271,7 +271,7 @@ var initMap = function () {
     //to be deleted
         document.getElementById('getRoute').onclick = function () {
             getCurrentLocation();
-            setTimeout(() => calculateAndDisplayRoute(directionsService, directionsDisplay, searchBox), 1000);
+            setTimeout(() => calculateAndDisplayRoute(directionsService, directionsDisplay1, directionsDisplay2, directionsDisplay3, searchBox), 2000);
         };
     // Listen for click on map
     google.maps.event.addListener(map, 'click', function (event) {

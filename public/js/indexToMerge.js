@@ -1,37 +1,3 @@
-var currentBuild = 99;
-var currentFac = 99;
-var GGM;
-var service;
-var origins = [];
-var pos;
-var numb;
-var map;
-var mark;
-var stopCounter=true;
-    window.lat =13.7367;
-    window.lng =100.5331;
-var arr_Destination = [
-    { title: 'Place A', lat: 13.736363, lng: 100.533980 },
-    { title: 'Place B', lat: 13.736086, lng: 100.533973 },
-];
-var destinations = [];
-var posPlace;
-
-//Filters
-var librMarkers = [];
-var librCounter = 0;
-var vendmMarkers = [];
-var vendmCounter = 0;
-var copyMarkers = [];
-var copyCounter = 0;
-var coffeeshopMarkers = [];
-var coffeeshopCounter = 0;
-var museumMarkers = [];
-var museumCounter = 0;
-var canteenMarkers = [];
-var canteenCounter = 0;
-var atmMarkers = [];
-var atmCounter = 0;
 // Merge all variables/defines here
 // Current Location (if applicable)
 var currentLat = null;
@@ -50,8 +16,7 @@ var directionsDisplay1;
 var directionsDisplay2;
 var directionsDisplay3;
 
-setInterval(function(){updatePosition(getLocation());}, 1000);
-var initMap=function() {
+function initMap() {
     //Map options
     console.log("FILE 1 map executed")
     var options = {
@@ -59,11 +24,9 @@ var initMap=function() {
         center: { lat: 13.7384, lng: 100.5321 }
     }
     //Create Map
-     map = new google.maps.Map(document.getElementById('map'), options);
-     mark = new google.maps.Marker({position:{lat:lat, lng:lng}, map:map});
-     mark.setVisible(false);
-    setInterval(function(){realtimeSetup();},1000);
+    var map = new google.maps.Map(document.getElementById('map'), options);
     var directionsService = new google.maps.DirectionsService;
+
     // Instantiate Directions Renderers
     directionsDisplay1 = new google.maps.DirectionsRenderer;
     directionsDisplay2 = new google.maps.DirectionsRenderer;
@@ -82,149 +45,140 @@ var initMap=function() {
         strokeOpacity: 1.0,
         strokeWeight: 5
     })});
-    var directionsDisplay = new google.maps.DirectionsRenderer;
+
     GGM = new Object(google.maps);
     service = new GGM.DistanceMatrixService();
-    directionsDisplay.setMap(map);
-    
-    
 
     document.getElementById("atm").addEventListener("click", function () {
         atmCounter++;
-        $.get('/location/atm', (data) => {
-            console.log("ATM ", data[0].Latitude);
-            if (atmCounter % 2 != 0) {
-                for (i = 0; i <= atmMarkers.length; i++) {
-                    atmMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/atm.png'
-                    });
-                }
-            } else {
-                for (i = 0; i <= atmMarkers.length; i++) {
-                    atmMarkers[i].setVisible(false);
-                }
+        //console.log(atmCounter);
+        if (atmCounter % 2 != 0) {
+            for (i = 0; i <= atmMarkers.length; i++) {
+                atmMarkers[i] = new google.maps.Marker({
+                    position: new google.maps.LatLng(atmLocations[i].coords),
+                    map: map
+                });
             }
-        });
+        } else {
+            for (i = 0; i <= atmMarkers.length; i++) {
+                atmMarkers[i].setVisible(false);
+                //console.log(atmCounter*(-1));
+            }
+        }
     });
 
     document.getElementById("canteen").addEventListener("click", function () {
         canteenCounter++;
-        $.get('/location/canteen', (data) => {
-            if (canteenCounter % 2 != 0) {
-                for (i = 0; i <= canteenMarkers.length; i++) {
-                    canteenMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/canteen.png'
-                    });
-                }
-            } else {
-                for (i = 0; i <= canteenMarkers.length; i++) {
-                    canteenMarkers[i].setVisible(false);
-                }
+        //console.log(atmCounter);
+        if (canteenCounter % 2 != 0) {
+            for (i = 0; i <= canteenMarkers.length; i++) {
+                canteenMarkers[i] = new google.maps.Marker({
+                    position: new google.maps.LatLng(canteenLocations[i].coords),
+                    map: map
+                });
             }
-        });
+        } else {
+            for (i = 0; i <= canteenMarkers.length; i++) {
+                canteenMarkers[i].setVisible(false);
+                //console.log(atmCounter*(-1));
+            }
+        }
     });
 
     document.getElementById("museum").addEventListener("click", function () {
         museumCounter++;
-        $.get('/location/museum', (data) => {
-            if (museumCounter % 2 != 0) {
-                for (i = 0; i <= museumMarkers.length; i++) {
-                    museumMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/museum.png'
-                    });
-                }
-            } else {
-                for (i = 0; i <= museumMarkers.length; i++) {
-                    museumMarkers[i].setVisible(false);
-                }
+        //console.log(atmCounter);
+        if (museumCounter % 2 != 0) {
+            for (i = 0; i <= museumMarkers.length; i++) {
+                museumMarkers[i] = new google.maps.Marker({
+                    position: new google.maps.LatLng(museumLocations[i].coords),
+                    map: map
+                });
             }
-        });
+        } else {
+            for (i = 0; i <= museumMarkers.length; i++) {
+                museumMarkers[i].setVisible(false);
+                //console.log(atmCounter*(-1));
+            }
+        }
     });
 
     document.getElementById("coffeeshop").addEventListener("click", function () {
         coffeeshopCounter++;
-        $.get('/location/coffeeshop', (data) => {
-            if (coffeeshopCounter % 2 != 0) {
-                for (i = 0; i <= coffeeshopMarkers.length; i++) {
-                    coffeeshopMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/coffee.png'
-                    });
-                }
-            } else {
-                for (i = 0; i <= coffeeshopMarkers.length; i++) {
-                    coffeeshopMarkers[i].setVisible(false);
-                }
+        //console.log(atmCounter);
+        if (coffeeshopCounter % 2 != 0) {
+            for (i = 0; i <= coffeeshopMarkers.length; i++) {
+                coffeeshopMarkers[i] = new google.maps.Marker({
+                    position: new google.maps.LatLng(coffeeshopLocations[i].coords),
+                    map: map
+                });
             }
-        });
+        } else {
+            for (i = 0; i <= coffeeshopMarkers.length; i++) {
+                coffeeshopMarkers[i].setVisible(false);
+                //console.log(atmCounter*(-1));
+            }
+        }
     });
 
     document.getElementById("copyprint").addEventListener("click", function () {
         copyCounter++;
-        $.get('/location/copyprint', (data) => {
-            if (copyCounter % 2 != 0) {
-                for (i = 0; i <= copyMarkers.length; i++) {
-                    copyMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/copy.png'
-                    });
-                }
-            } else {
-                for (i = 0; i <= copyMarkers.length; i++) {
-                    copyMarkers[i].setVisible(false);
-                }
+        //console.log(atmCounter);
+        if (copyCounter % 2 != 0) {
+            for (i = 0; i <= copyMarkers.length; i++) {
+                copyMarkers[i] = new google.maps.Marker({
+                    position: new google.maps.LatLng(copyLocations[i].coords),
+                    map: map
+                });
             }
-        });
+        } else {
+            for (i = 0; i <= copyMarkers.length; i++) {
+                copyMarkers[i].setVisible(false);
+                //console.log(atmCounter*(-1));
+            }
+        }
     });
 
     document.getElementById("vendm").addEventListener("click", function () {
         vendmCounter++;
-        $.get('/location/vending_machine', (data) => {
-            if (vendmCounter % 2 != 0) {
-                for (i = 0; i <= vendmMarkers.length; i++) {
-                    vendmMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/vending.png'
-                    });
-                }
-            } else {
-                for (i = 0; i <= vendmMarkers.length; i++) {
-                    vendmMarkers[i].setVisible(false);
-                }
+        //console.log(atmCounter);
+        if (vendmCounter % 2 != 0) {
+            for (i = 0; i <= vendmMarkers.length; i++) {
+                vendmMarkers[i] = new google.maps.Marker({
+                    position: new google.maps.LatLng(vendmLocations[i].coords),
+                    map: map
+                });
             }
-        });
+        } else {
+            for (i = 0; i <= vendmMarkers.length; i++) {
+                vendmMarkers[i].setVisible(false);
+                //console.log(atmCounter*(-1));
+            }
+        }
     });
 
     document.getElementById("libr").addEventListener("click", function () {
         librCounter++;
-        $.get('/location/library', (data) => {
-            if (librCounter % 2 != 0) {
-                for (i = 0; i <= librMarkers.length; i++) {
-                    librMarkers[i] = new google.maps.Marker({
-                        position: new google.maps.LatLng(data[i].Latitude, data[i].Longitude),
-                        map: map,
-                        icon: '/img/Libr.png'
-                    });
-                }
-            } else {
-                for (i = 0; i <= librMarkers.length; i++) {
-                    librMarkers[i].setVisible(false);
-                }
+        //console.log(atmCounter);
+        if (librCounter % 2 != 0) {
+            for (i = 0; i <= librMarkers.length; i++) {
+                librMarkers[i] = new google.maps.Marker({
+                    position: new google.maps.LatLng(librLocations[i].coords),
+                    map: map
+                });
             }
-        });
+        } else {
+            for (i = 0; i <= librMarkers.length; i++) {
+                librMarkers[i].setVisible(false);
+                //console.log(atmCounter*(-1));
+            }
+        }
     });
 
     document.getElementById('getRoute').onclick = function () {
         getCurrentLocation();
+
+        // Timeout should be assigned
         setTimeout(() => calculateAndDisplayRoute(directionsService, directionsDisplay1, directionsDisplay2, directionsDisplay3, searchBox), 2000);
     };
     // Listen for click on map
@@ -350,217 +304,8 @@ var initMap=function() {
 
     }
     calculateDistance();
-
-};
-window.initMap=initMap;
-
-
-
-
-
-var listCourse = ["2190101 Computer Programming", "2183101 Engineering Graphics"];
-var theCourse = ""
-
-function courseOnEnter(ele) {
-    if (event.key === 'Enter') {
-        searchCourse()
-    }
 }
 
-function searchCourse() {
-
-    for (i = 0; i < listCourse.length; i++) {
-        if (document.getElementById("course-search").value == (listCourse[i])) {
-            theCourse = listCourse[i];
-            break;
-        }
-    }
-    if (theCourse != "") {
-        showCourse();
-    } else if (document.getElementById("course-search").value.length == 0) {
-        alert("Please enter course.")
-    } else {
-        alert("Course Not Found");
-        document.getElementById("course-info").style.display = "none";
-    }
-}
-
-function showCourse() {
-    var courseDiv = document.getElementById("course-info");
-    courseDiv.style.display = "block";
-    document.getElementById("course-info-head").style.display = "block";
-    document.getElementById("course-info-head").scrollIntoView({ behavior: "smooth" });
-    courseDiv.innerHTML = "<p>Course : " + theCourse + "<br> Section :<br> Lecturer :<br> Day : <br> Time : <br> Room number : <br> Building : <br> Floor : <br> Faculty : </p>";
-    theCourse = ""; //prepare to use for next course search
-}
-
-
-
-
-function openFloorPlan() {
-    document.getElementById("flPlan").style.display = "block";
-    document.getElementById("flPlan").scrollIntoView(true, { behavior: "smooth" });
-}
-
-function closeCourseInfo() {
-    document.getElementById("course-info").style.display = "none";
-    document.getElementById("course-info-head").style.display = "none";
-}
-
-function closeFloorPlan() {
-    document.getElementById("flPlan").style.display = "none";
-}
-
-function selBuild() {
-    // document.getElementById("fl-4").classList.toggle("hide");
-    document.getElementById("myDropdown").classList.toggle("show");
-    //document.getElementById("fl-4").classList.toggle("hide");
-}
-
-function mapFunc(fac, building) {
-
-    //*
-    var flList = document.getElementById("selfloorlist");
-
-    //create floor list options
-    var flarr = []
-    //floor 1 to 12
-    for (a = 1; a < 13; a++) {
-        flarr[a] = document.createElement("option");
-        flarr[a].text = "Floor " + a;
-    }
-
-    //floor M, M1, M2, M3
-    for (b = 20; b < 24; b++) {
-        flarr[b] = document.createElement("option");
-        flarr[b].text = "Floor M" + (b - 20);
-        if (b == 20) {
-            flarr[b].text = "Floor M";
-        }
-    }
-
-    //clear floor list value
-    while (flList.options.length > 0) {
-        flList.remove(0);
-    }
-
-    //selected building number and faculty
-    currentBuild = building;
-    currentFac = fac;
-
-    //old ver floor drop down
-    //document.getElementById("theDrop2").innerText = "Floor 1";
-
-    if (fac == 0) { //if it is a building in faculty of engineering
-        if (building == 100) {//default floor is M
-            flList.add(flarr[20]);
-            for (x = 3; x < 8; x++) {
-                flList.add(flarr[x]);
-            }
-            flList.add(flarr[9]);
-            flList.add(flarr[10]);
-            flList.add(flarr[12]);
-            document.getElementById("show-map").innerHTML = "<center><img src=\"img/ENG0100-FR90.png\"></center>"
-            document.getElementById("theDrop2").innerText = "Floor M";
-        }
-        else {
-            flList.add(flarr[1]);
-            flList.add(flarr[2]);
-            flList.add(flarr[3]);
-
-            if (building == 3) {
-                flList.add(flarr[4]);
-            }
-
-            //default floor is 1
-            document.getElementById("show-map").innerHTML = "<center><img src=\"img/ENG0" + building + "-FR1.png\"></center>"
-            //document.getElementById("theDrop").innerText = "Engineering Building " + building;
-            document.getElementById("building-num").innerText = "Engineering Building " + building;
-        }
-
-
-    }
-    else if (fac == 1) { //if it is a building in faculty of arts
-        flList.add(flarr[21]);
-        flList.add(flarr[23]);
-        for (y = 1; y < 10; y++) {
-            flList.add(flarr[y]);
-        }
-        flList.value = "Floor 1";
-
-        document.getElementById("show-map").innerHTML = "<center><img src=\"img/ARTS01-FR1.png\"></center>"
-        //document.getElementById("theDrop").innerText = "Maha Chakri Sirindhorn Building";
-        document.getElementById("building-num").innerText = "Maha Chakri Sirindhorn Building";
-    }
-}
-
-//geolocation
-function gpsHere() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(onRecievePosition, positionNotRecieved);
-        //update current location (not tested yet)
-        var overwatch = navigator.geolocation.watchPosition(onRecievePosition, positionNotRecieved);
-        console.log(overwatch);
-        navigator.geolocation.clearWatch(overwatch);
-    }
-    function onRecievePosition(currentPosition) {
-        console.log(currentPosition);
-        currentLat = currentPosition.coords.latitude;
-        currentLng = currentPosition.coords.longitude;
-        //mark current location
-        var options = {
-            zoom: 17,
-            center: { lat: currentLat, lng: currentLng }
-        }
-        var map = new google.maps.Map(document.getElementById('map'), options);
-        var marker = new google.maps.Marker({
-            position: { lat: currentLat, lng: currentLng },
-            map: map,
-            //icon: '/img/canteen.png' 
-            //icon: ,
-            //draggable:trues
-        });
-    }
-
-    function positionNotRecieved(positionError) {
-        console.log(positionError);
-    }
-}
-
-//variable to store current location
-var currentLat;
-var currentLng;
-
-//get the current location and update variable "currentLat" and "currentLng"
-function getCurrentLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            currentLat = position.coords.latitude;
-            currentLng = position.coords.longitude;
-        });
-    }
-}
-
-//Draw route from current location to destination
-
-
-function flFunc() {
-    var flList = document.getElementById("selfloorlist");
-    var selectedFloor = flList.value + ""
-    var flstr = selectedFloor.slice(6)
-    if (flstr == "M") {
-        flstr = 90;
-    }
-    else if (flstr[0] == "M") {
-        flstr = parseInt(flstr[1]) + 90;
-    }
-    if (currentFac == 0) { //if it is a building in faculty of engineering
-        document.getElementById("show-map").innerHTML = "<center><img src=\"img/ENG0" + currentBuild + "-FR" + flstr + ".png\"></center>"
-    }
-    else if (currentFac == 1) { //if it is a building in faculty of arts
-        document.getElementById("show-map").innerHTML = "<center><img src=\"img/ARTS01-FR" + flstr + ".png\"></center>"
-    }
-}
 // Determine best travel/transport mode
 function calculateBestTravelMode(start, end, popBusNode, bicycleNode, hamoNode, muvmiNode, callback) {
     var leastDistance = 0;

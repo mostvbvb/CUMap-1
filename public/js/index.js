@@ -34,6 +34,7 @@ var canteenMarkers = [];
 var canteenCounter = 0;
 var atmMarkers = [];
 var atmCounter = 0;
+//test
 // Merge all variables/defines here
 // Current Location (if applicable)
 var currentLat = null;

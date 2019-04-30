@@ -29,11 +29,10 @@ function realtimeSetup(){
         lat = payload.message.lat;
         lng = payload.message.lng;
         
-        if(stopCounter==true){
-          map.setCenter({lat:lat, lng:lng, alt:0});
-          stopCounter=false;
-          console.log("stopCounter"+ stopCounter);
-        }
+        
+          map.setCenter({lat:13.7384, lng:100.5321, alt:0});
+          
+        
 
         mark.setPosition({lat:lat, lng:lng, alt:0});
         
